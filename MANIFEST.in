@@ -1,0 +1,2 @@
+include src/xcm-parser/log.conf
+include src/xcm-parser/scrall.peg
