@@ -39,7 +39,7 @@ This is not the intended usage scenario, but may be helpful for testing or explo
 may generate some diagnostic info you may want to create a fresh working directory and cd into it
 first. From there...
 
-    % xcm -f myclasses.xcm
+    % xcm elevator.xcm
 
 The .xcm extension is not necessary, but the file must contain xcm text. See this repository's wiki for
 more about the xcm language. The grammar is defined in the [class_model.peg](https://github.com/modelint/scrall/blob/master/src/scrall/scrall.peg) file. (if the link breaks after I do some update to the code, 
@@ -47,9 +47,9 @@ just browse through the code looking for the scrall.peg file, and let me know so
 
 You can also specify a debug option like this:
 
-    % xcm -f myclasses.xcm -D
+    % xcm elevator.xcm -D
 
 This will create a scrall-diagnostics folder in your current working directory and deposite a coupel of PDFs defining
 the parse of both the scrall grammar: `class_model_tree.pdf` and your supplied text: `class_model.pdf`.
 
-You should also see a file named `xcm-parser.log`
+You should also see a file named `xcm-parser.log` in a diagnostics directory within your working directory
