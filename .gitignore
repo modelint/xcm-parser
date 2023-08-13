@@ -6,7 +6,7 @@ diagnostics/
 *.pyc
 *.db
 .DS_Store
-src/scrall.egg-info
+src/xcm_parser.egg-info
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml

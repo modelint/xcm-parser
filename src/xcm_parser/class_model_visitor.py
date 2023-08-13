@@ -8,63 +8,83 @@ ID = namedtuple('_ID', 'number superid')
 class SubsystemVisitor(PTNodeVisitor):
 
     # Root
-    def visit_subsystem(self, node, children):
-        """All classes and relationships in the subsystem"""
+    @classmethod
+    def visit_subsystem(cls, node, children):
+        """ metadata? domain_header subsystem_header class_set rel_section? EOF """
         return children
 
     # Metadata
-    def visit_metadata(self, node, children):
-        """Meta data section"""
+    @classmethod
+    def visit_metadata(cls, node, children):
+        """ metadata_header data_item* """
         items = {k: v for c in children for k, v in c.items()}
         return items
 
-    def visit_text_item(self, node, children):
+    @classmethod
+    def visit_text_item(cls, node, children):
+        """ ':' SP* r'.*' """
         return children[0], False  # Item, Not a resource
 
-    def visit_resource_item(self, node, children):
+    @classmethod
+    def visit_resource_item(cls, node, children):
+        """ '>' SP* word (delim word)* """
         return ''.join(children), True  # Item, Is a resource
 
-    def visit_item_name(self, node, children):
+    @classmethod
+    def visit_item_name(cls, node, children):
+        """ iword delim word* """
         return ''.join(children)
 
-    def visit_data_item(self, node, children):
+    @classmethod
+    def visit_data_item(cls, node, children):
+        """ INDENT item_name SP* (resource_item / text_item) EOL """
         return { children[0]: children[1] }
 
     # Domain
-    def visit_domain_header(self, node, children):
-        """Domain name and optional alias"""
+    @classmethod
+    def visit_domain_header(cls, node, children):
+        """ "domain" SP domain_name domain_alias EOL """
         items = {k: v for d in children for k, v in d.items()}
         return items
 
-    def visit_domain_name(self, node, children):
+    @classmethod
+    def visit_domain_name(cls, node, children):
+        """ icaps_name """
         name = ''.join(children)
         return {'name': name }
 
-    def visit_domain_alias(self, node, children):
-        """Alias of domain_name"""
+    @classmethod
+    def visit_domain_alias(cls, node, children):
+        """ ',' SP acword """
         return { 'alias': children[0] }
 
     # Subsystem
-    def visit_subsystem_header(self, node, children):
-        """Subsystem name, numbering range, and optional alias"""
+    @classmethod
+    def visit_subsystem_header(cls, node, children):
+        """ "subsystem" SP subsystem_name subsystem_alias SP num_range EOL """
         items = {k: v for d in children for k, v in d.items()}
         return items
 
-    def visit_subsystem_name(self, node, children):
+    @classmethod
+    def visit_subsystem_name(cls, node, children):
+        """ icaps_name """
         name = ''.join(children)
         return {'name': name }
 
-    def visit_subsystem_alias(self, node, children):
-        """Alias of domain_name"""
+    @classmethod
+    def visit_subsystem_alias(cls, node, children):
+        """ ',' SP acword """
         return { 'alias': children[0] }
 
-    def visit_num_range(self, node, children):
-        """Subsystem numbering range"""
+    @classmethod
+    def visit_num_range(cls, node, children):
+        """ ordinal '-' ordinal """
         return { 'range': (int(children[0]), int(children[1])) }
 
     # Classes
-    def visit_class_set(self, node, children):
-        """All of the classes"""
+    @classmethod
+    def visit_class_set(cls, node, children):
+        """ class_block* """
         return children
 
     @classmethod
@@ -78,20 +98,25 @@ class SubsystemVisitor(PTNodeVisitor):
         eeheader = {} if not eeheader else { 'ee' : eeheader[0] }
         return ch | ablock | eeheader
 
-    def visit_class_name(self, node, children):
+    @classmethod
+    def visit_class_name(cls, node, children):
+        """ icaps_name """
         name = ''.join(children)
         return {'name': name }
 
-    def visit_class_alias(self, node, children):
-        """Abbreviated class_alias name of class"""
+    @classmethod
+    def visit_class_alias(cls, node, children):
+        """ ',' SP+ acword """
         return { 'alias': children[0] }
 
-    def visit_import(self, node, children):
-        """Imported class marker"""
+    @classmethod
+    def visit_import(cls, node, children):
+        """ SP+ '<import:' icaps_name '>' """
         d = {'import': children[0]}
         return d
 
-    def visit_class_header(self, node, children):
+    @classmethod
+    def visit_class_header(cls, node, children):
         """Beginning of class section, includes name, optional class_alias and optional import marker"""
         items = {k: v for d in children for k, v in d.items()}
         return items
@@ -104,38 +129,53 @@ class SubsystemVisitor(PTNodeVisitor):
         return children[0]
 
     # Attributes
-    def visit_attr_block(self, node, children):
-        """Attribute text (unparsed)"""
+    @classmethod
+    def visit_attr_block(cls, node, children):
+        """ attr_header attribute+ """
         return {"attributes": children}
 
-    def visit_attribute(self, node, children):
-        """An attribute with its tags and optional explicit type"""
+    @classmethod
+    def visit_attribute(cls, node, children):
+        """ INDENT attr_name (' : ' type_name)? (SP attr_tags)? EOL """
         items = {k: v for d in children for k, v in d.items()}
         return items
 
-    def visit_attr_name(self, node, children):
+    @classmethod
+    def visit_attr_name(cls, node, children):
+        """ icaps_name """
         name = ''.join(children)
         return {'name': name }
 
-    def visit_type_name(self, node, children):
+    @classmethod
+    def visit_type_name(cls, node, children):
+        """ icaps_name """
         name = ''.join(children)
         return {'type': name }
 
-    def visit_attr_tags(self, node, children):
-        """Tag values organized in a list by tag"""
+    @classmethod
+    def visit_attr_tags(cls, node, children):
+        """ '{' attr_tag (',' SP attr_tag )* '}' """
         tdict = {}  # Tag dictionary of value lists per tag
         for tag in ['I', 'R']:  # Identifier and referential attr tags
             tdict[tag] = [c[tag] for c in children if tag in c]  # Create list of values per tag from children
         return tdict
 
-    def visit_attr_tag(self, node, children):
-        """Beginning of class section, includes name, optional alias and optional import marker"""
+    @classmethod
+    def visit_attr_tag(cls, node, children):
+        """
+        itag / rtag
+
+        Beginning of class section, includes name, optional alias and optional import marker
+        """
         item = children[0]
         return item
 
-    def visit_rtag(self, node, children):
+    @classmethod
+    def visit_rtag(cls, node, children):
         """
-        Referential attribute tag
+       'O'? 'R' ordinal 'c'?
+
+       Referential attribute tag
 
         Here we expect examples like these:
             R21c
@@ -155,8 +195,9 @@ class SubsystemVisitor(PTNodeVisitor):
         rtag = {tag: (rnum, constraint) }
         return rtag
 
-    def visit_itag(self, node, children):
-        """Identifier attribute tag"""
+    @classmethod
+    def visit_itag(cls, node, children):
+        """ '*'? 'I' ordinal? """
         itag = None
         if not children:
             itag = ID(1, False)
@@ -168,185 +209,223 @@ class SubsystemVisitor(PTNodeVisitor):
         return id
 
     # Relationships
-    # ---
-    def visit_rel_section(self, node, children):
-        """Relationships section with all of the relationships"""
+    @classmethod
+    def visit_rel_section(cls, node, children):
+        """ relationship_header rel* """
         return children
 
-    def visit_rel(self, node, children):
-        """Relationship rnum and rel data"""
+    @classmethod
+    def visit_rel(cls, node, children):
+        """ rname (ordinal_rel / binary_rel / gen_rel) block_end """
         return {**children[0], **children[1]}
 
-    def visit_rname(self, node, children):
-        """The Rnum on any relationship"""
+    @classmethod
+    def visit_rname(cls, node, children):
+        """ INDENT rnum EOL """
         return {"rnum": children[0]}
 
     # Ordinal relationship
-    def visit_ordinal_rel (self, node, children):
-        """Ordinal relationship """
+    @classmethod
+    def visit_ordinal_rel (cls, node, children):
+        """ ascend oform """
         items = {k: v for d in children for k, v in d.items()}
         return items
 
-    def visit_ascend(self, node, children):
-        """Ascend-descend phrases"""
+    @classmethod
+    def visit_ascend(cls, node, children):
+        """ INDENT highval SP '/' SP lowval ',' SP class_name EOL """
         items = {node.rule_name: {"highval": children[0], "lowval": children[1], "cname": children[2]['name']}}
         return items
 
-    def visit_highval(self, node, children):
-        """High value phrase"""
+    @classmethod
+    def visit_highval(cls, node, children):
+        """ phrase """
         return ''.join(children)
 
-    def visit_lowval(self, node, children):
-        """Low value phrase"""
+    @classmethod
+    def visit_lowval(cls, node, children):
+        """ phrase """
         return ''.join(children)
 
-    def visit_oform(self, node, children):
-        """Ordinal formalization"""
+    @classmethod
+    def visit_oform(cls, node, children):
+        """ INDENT rank_attr SP ':' SP itag EOL """
         items = {node.rule_name: {"ranking attr": children[0], "id": children[1]['I'].number}}
         return items
 
     # Binary association
-    def visit_binary_rel(self, node, children):
-        """Binary relationship with or without an association class"""
+    @classmethod
+    def visit_binary_rel(cls, node, children):
+        """ t_side p_side assoc_class? ref1 ref2? """
         items = {k: v for d in children for k, v in d.items()}
         return items
 
-    def visit_t_side(self, node, children):
-        """T side of a binary association"""
+    @classmethod
+    def visit_t_side(cls, node, children):
+        """ rel_side """
         items = {node.rule_name: {"phrase": children[0], "mult": children[1], "cname": children[2]}}
         return items
 
-    def visit_p_side(self, node, children):
-        """P side of a binary association"""
+    @classmethod
+    def visit_p_side(cls, node, children):
+        """ rel_side """
         items = {node.rule_name: {"phrase": children[0], "mult": children[1], "cname": children[2]}}
         return items
 
-    def visit_phrase(self, node, children):
-        """Phrase on one side of a binary relationship phrase"""
+    @classmethod
+    def visit_phrase(cls, node, children):
+        """ lword (delim lword)* """
         phrase = ''.join(children)
         return phrase
 
-    def visit_mult(self, node, children):
-        """Binary association (not association class) multiplicity"""
+    @classmethod
+    def visit_mult(cls, node, children):
+        """ r'[1M]c?' """
         mult = node.value  # No children because literal 1 or M is thrown out
         return mult
 
-    def visit_assoc_class(self, node, children):
-        """Association class name and multiplicity"""
+    @classmethod
+    def visit_assoc_class(cls, node, children):
+        """ INDENT ('1' / 'M') SP+ icaps_name EOL """
         items = { "assoc_mult": children[0], "assoc_cname": children[1] }
         return items
 
-    def visit_binref(self, node, children):
-        """Single class to single class ref"""
+    @classmethod
+    def visit_binref(cls, node, children):
+        """ INDENT source_attrs SP '->' SP target_attrs (',' SP itag)? EOL """
         id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
         ref = {'source': children[0], 'target': children[1], 'id': id}
         return ref
 
-    def visit_ref1(self, node, children):
-        """Either a simple or t or p reference (t or p if associative)"""
+    @classmethod
+    def visit_ref1(cls, node, children):
+        """ binref """
         id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
         ref = { 'ref1': {'source': children[0], 'target': children[1], 'id': id}}
         return ref
 
-    def visit_ref2(self, node, children):
-        """Either a t or p reference, requires an association class"""
+    @classmethod
+    def visit_ref2(cls, node, children):
+        """ binref """
         id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
         ref = { 'ref2': {'source': children[0], 'target': children[1], 'id': id}}
         return ref
 
     # Generalization
-    def visit_gen_rel(self, node, children):
-        """Generalization relationship"""
+    @classmethod
+    def visit_gen_rel(cls, node, children):
+        """ superclass subclasses genref """
         items = {k: v for d in children[1:] for k, v in d.items()}
         items["superclass"] = children[0]
         return items
 
-    def visit_superclass(self, node, children):
-        """Superclass in a generalization relationship"""
+    @classmethod
+    def visit_superclass(cls, node, children):
+        """ INDENT icaps_name SP? "+" EOL """
         return children[0]
 
-    def visit_subclasses(self, node, children):
-        """Subclass in a generalization relationship"""
+    @classmethod
+    def visit_subclasses(cls, node, children):
+        """ subclass+ """
         return { 'subclasses': children }
 
-    def visit_subclass(self, node, children):
-        """Subclass in a generalization relationship"""
+    @classmethod
+    def visit_subclass(cls, node, children):
+        """ INDENT INDENT icaps_name EOL """
         return children[0]
 
-    def visit_genref(self, node, children):
-        """Either abbreviated <subclass> source or explicit source for each subclass"""
+    @classmethod
+    def visit_genref(cls, node, children):
+        """ single_line_genref """
         genrefs = {'genrefs': children}
         return genrefs
 
-    def visit_single_line_genref(self, node, children):
-        """Either a t or p reference, requires an association class"""
+    @classmethod
+    def visit_single_line_genref(cls, node, children):
+        """ INDENT allsubs_attrs SP '->' SP target_attrs (',' SP itag)? EOL """
         id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
         grefs = {'source': children[0], 'target': children[1], 'id': id}
         return grefs
 
-
-    def visit_source_attrs(self, node, children):
-        """Source attributes referring to target attributes"""
+    @classmethod
+    def visit_source_attrs(cls, node, children):
+        """ single_class_attrs """
         class_name = children[0]['name']
         attrs = children[1]
         items = {'class': class_name, 'attrs': attrs}
         return items
 
-    def visit_target_attrs(self, node, children):
-        """Referenced target attributes"""
+    @classmethod
+    def visit_target_attrs(cls, node, children):
+        """ single_class_attrs """
         class_name = children[0]['name']
         attrs = children[1]
-        items = {'class': class_name, 'attrs':attrs}
+        items = {'class': class_name, 'attrs': attrs}
         return items
 
-    def visit_allsubs_attrs(self, node, children):
-        """A subset of attrs from a single class"""
+    @classmethod
+    def visit_allsubs_attrs(cls, node, children):
+        """ '<subclass>' attr_set """
         items = { 'class': '<subclass>', 'attrs': children[0]}
         return items
 
-    def visit_single_class_attrs(self, node, children):
-        """A subset of attrs from a single class"""
+    @classmethod
+    def visit_single_class_attrs(cls, node, children):
+        """ class_name attr_set """
         items = { 'class': children[0], 'attrs': children[1]}
         return items
 
-    def visit_attr_set(self, node, children):
-        """Source attributes referring to some target"""
+    @classmethod
+    def visit_attr_set(cls, node, children):
+        """ '.' ('(' attr_name (',' SP attr_name)+ ')' """
         attrs = [c['name'] for c in children]
         return attrs
 
-    #---
-
     # Text and delimiters
-
     @classmethod
-    def visit_direction(cls, node, children):
-        """
-        '<' | '>'
-        """
-        direction = 'egress' if children[0] == '>' else 'ingress'
-        return direction
-
-    def visit_acword(self, node, children):
-        """All caps word"""
+    def visit_acword(cls, node, children):
+        """ r'[A-Z][A-Z0-9_]*' """
         return node.value  # No children since this is a literal
 
-    def visit_acaps_name(self, node, children):
-        """Model element name"""
+    @classmethod
+    def visit_acaps_name(cls, node, children):
+        """ acword (delim acword)* """
         name = ''.join(children)
         return name
 
-    def visit_icaps_all_name(self, node, children):
-        """Model element name"""
+    @classmethod
+    def visit_icaps_all_name(cls, node, children):
+        """ iword (delim iword)* """
         name = ''.join(children)
         return name
 
-    def visit_icaps_name(self, node, children):
-        """Model element name"""
+    @classmethod
+    def visit_icaps_name(cls, node, children):
+        """
+        word (delim word)*
+        """
         name = ''.join(children)
         return name
 
-    def visit_nl(self, node, children):
+    # Discarded whitespace and comments
+    @classmethod
+    def visit_LINEWRAP(cls, node, children):
+        """
+        EOL SP*
+        end of line followed by optional INDENT on next line
+        """
         return None
 
-    def visit_sp(self, node, children):
+    @classmethod
+    def visit_EOL(cls, node, children):
+        """
+        SP* COMMENT? '\n'
+
+        end of line: Spaces, Comments, blank lines, whitespace we can omit from the parser result
+        """
+        return None
+
+    @classmethod
+    def visit_SP(cls, node, children):
+        """ ' '  Single space character (SP) """
         return None

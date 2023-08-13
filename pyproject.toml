@@ -23,7 +23,7 @@ build = ["build", "twine"]
 dev = ["bump2version", "pytest"]
 
 [project.scripts]
-xcm = "xcm-parser.__main__:main"
+xcm = "xcm_parser.__main__:main"
 
 [project.urls]
 repository    = "https://github.com/modelint/xcm-parser"
