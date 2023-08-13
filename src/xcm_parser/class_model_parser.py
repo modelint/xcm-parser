@@ -4,7 +4,6 @@ from xcm_parser.exceptions import ModelGrammarFileOpen, ModelInputFileOpen, Mode
 from xcm_parser.class_model_visitor import SubsystemVisitor
 from arpeggio import visit_parse_tree, NoMatch
 from arpeggio.cleanpeg import ParserPEG
-from xcm_parser.nocomment import nocomment
 from collections import namedtuple
 import os
 from pathlib import Path
@@ -66,7 +65,8 @@ class ClassModelParser:
 
         # Read the class model file
         try:
-            cls.model_text = nocomment(open(file_input, 'r').read())
+            cls.model_text = open(file_input, 'r').read() + '\n'
+            # At least one newline at end simplifies grammar rules
         except OSError as e:
             raise ModelInputFileOpen(file_input)
 
@@ -83,7 +83,7 @@ class ClassModelParser:
         """
         # Read the grammar file
         try:
-            cls.xcm_grammar = nocomment(open(ClassModelParser.grammar_file, 'r').read())
+            cls.xcm_grammar = open(ClassModelParser.grammar_file, 'r').read()
         except OSError as e:
             raise ModelGrammarFileOpen(ClassModelParser.grammar_file)
 

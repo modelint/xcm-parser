@@ -1,29 +1,20 @@
-// Model Markdown Arpeggio Clean Peg Grammar
-
-// For now we concentrate on drawing a class diagram, so only class and relationship
-// content is here for now
-
-// Attribute and method structure is not parsed since it is simply rendered without
-// further interpretation on a class diagram
-
-//ig_line = r'\s*(///.*)?'
-
+// Executable Shlaer-Mellor Class Model syntax for *.xcm files
 
 // Subsystem
 // The only thing required is a subsystem name and a set of possibly empty classes
-subsystem = metadata? domain_header subsystem_header class_set rel_section? EOF
-domain_header = "domain" SP domain_name domain_alias EOL  // Declares the name of the domain
+subsystem = EOL* metadata? domain_header subsystem_header class_set rel_section? EOF
+domain_header = "domain" SP domain_name domain_alias EOL*  // Declares the name of the domain
 domain_name = icaps_name
 domain_alias = ',' SP acword
-subsystem_header = "subsystem" SP subsystem_name subsystem_alias SP num_range EOL  // Declares the name of the subsystem
+subsystem_header = "subsystem" SP subsystem_name subsystem_alias SP num_range EOL* // Declares the name of the subsystem
 subsystem_name = icaps_name
 subsystem_alias = ',' SP acword
 num_range = ordinal '-' ordinal
 
 // Metadata
 metadata = metadata_header data_item*
-metadata_header = "metadata" nl // Metadata header
-data_item = INDENT item_name SP* (resource_item / text_item) EOL // Metadata item
+metadata_header = "metadata" EOL* // Metadata header
+data_item = INDENT item_name SP* (resource_item / text_item) EOL* // Metadata item
 item_name = iword delim word* // Meta data item starts with initial cap
 resource_item = '>' SP* word (delim word)* // Resource is a name
 text_item = ':' SP* r'.*' // Field content can be any text
@@ -31,19 +22,19 @@ text_item = ':' SP* r'.*' // Field content can be any text
 // Classes
 class_set = class_block*  // All classes in the subsystem
 class_block = class_header ee_header? attr_block block_end
-class_header = "class" SP class_name class_alias? import? EOL
+class_header = "class" SP class_name class_alias? import? EOL*
 class_name = icaps_name
 class_alias = ',' SP+ acword
 import = SP+ '<import:' icaps_name '>' // Import marker and name of origin subsystem
 class_name = icaps_name
 
 // EE
-ee_header = "ee" SP acaps_name EOL
+ee_header = "ee" SP acaps_name EOL*
 
 // Attributes
 attr_block = attr_header attribute+ // A set of attributes
-attr_header = "attributes" EOL
-attribute = INDENT attr_name (' : ' type_name)? (SP attr_tags)? EOL
+attr_header = "attributes" EOL*
+attribute = INDENT attr_name (' : ' type_name)? (SP attr_tags)? EOL*
 attr_name = icaps_name
 type_name = icaps_name
 attr_tags = '{' attr_tag (',' SP attr_tag )* '}' // {I, I2, R29c} for example
@@ -54,39 +45,39 @@ rtag = 'O'? 'R' ordinal 'c'? // Relationship number and optional c constraint si
 // Relationships
 // ---
 rel_section = relationship_header rel*  // All relationships in the subsystem
-relationship_header = "relationships" EOL
+relationship_header = "relationships" EOL*
 rel = rname (ordinal_rel / binary_rel / gen_rel) block_end  // A rel is an ordinal, association or a generalization
-rname = INDENT rnum EOL  // Name of a rel is its rnum
+rname = INDENT rnum EOL*  // Name of a rel is its rnum
 
 // Ordinal
 ordinal_rel = ascend oform
-ascend = INDENT highval SP '/' SP lowval ',' SP class_name EOL
+ascend = INDENT highval SP '/' SP lowval ',' SP class_name EOL*
 highval = phrase
 lowval = phrase
-oform = INDENT rank_attr SP ':' SP itag EOL
+oform = INDENT rank_attr SP ':' SP itag EOL*
 rank_attr = attr_name
 
 // Binary association
 binary_rel = t_side p_side assoc_class? ref1 ref2? // Both sides
 t_side = rel_side
 p_side = rel_side
-rel_side = INDENT phrase "," SP mult SP+ icaps_name EOL  // One side of a binary association
-assoc_class = INDENT ('1' / 'M') SP+ icaps_name EOL   // Association class
+rel_side = INDENT phrase "," SP mult SP+ icaps_name EOL*  // One side of a binary association
+assoc_class = INDENT ('1' / 'M') SP+ icaps_name EOL*   // Association class
 ref1 = binref
 ref2 = binref
 
 // Generalization
 gen_rel = superclass subclasses genref // A generalization relationship
-superclass = INDENT icaps_name SP? "+" EOL // A superclass class name
+superclass = INDENT icaps_name SP? "+" EOL* // A superclass class name
 subclasses = subclass+
-subclass = INDENT INDENT icaps_name EOL  // A subclass class name
+subclass = INDENT INDENT icaps_name EOL*  // A subclass class name
 
 // Genref
 genref = single_line_genref / binref+ // Either abbreviated <subclass> source or explicit source for each subclass
-single_line_genref = INDENT allsubs_attrs SP '->' SP target_attrs (',' SP itag)? EOL // Abbreviated in a single line
+single_line_genref = INDENT allsubs_attrs SP '->' SP target_attrs (',' SP itag)? EOL* // Abbreviated in a single line
 
 // Reference
-binref = INDENT source_attrs SP '->' SP target_attrs (',' SP itag)? EOL // Single class to single class ref
+binref = INDENT source_attrs SP '->' SP target_attrs (',' SP itag)? EOL* // Single class to single class ref
 source_attrs = single_class_attrs // So parse visitor can define distinct source target dict keys
 target_attrs = single_class_attrs
 allsubs_attrs = '<subclass>' attr_set  // Abbreviation for same attrs from all subclasses in a generalization
@@ -109,10 +100,9 @@ mult = r'[1M]c?' // Binary relationship multiplicity, Shlaer-Mellor notation
 rnum = r'O?R[1-9][0-9]*' // Relationship number
 delim = r'[ _]' // Delimiter used inside of names
 INDENT = "    "  // Need INDENT for clarity and to signal unstructured lines of text
-block_end = "--" EOL  // Signifies end of a block (within section)
+block_end = "--" EOL*  // Signifies end of a block (within section)
 
 // Whitespace and comments
-LINEWRAP = EOL SP* // end of line followed by optional INDENT on next line
 EOL = SP* COMMENT? '\n' // end of line: Comments, blank lines, whitespace we can omit from the parser result
 COMMENT = '//' r'.*' // Comment slashes don't work if included in the regular expression for some reason
 SP = " "

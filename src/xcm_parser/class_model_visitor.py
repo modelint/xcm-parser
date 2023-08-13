@@ -10,7 +10,9 @@ class SubsystemVisitor(PTNodeVisitor):
     # Root
     @classmethod
     def visit_subsystem(cls, node, children):
-        """ metadata? domain_header subsystem_header class_set rel_section? EOF """
+        """
+        (LINEWWRAP* EOF) / (metadata? domain_header subsystem_header class_set rel_section? EOF)
+        """
         return children
 
     # Metadata
