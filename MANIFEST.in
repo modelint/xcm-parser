@@ -1,2 +1,2 @@
-include src/xcm-parser/log.conf
-include src/xcm-parser/class_model.peg
+include src/xcm_parser/log.conf
+include src/xcm_parser/class_model.peg
