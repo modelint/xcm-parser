@@ -1,15 +1,12 @@
 """ class_model_parser.py – First attempt to parse class block """
 
 from xcm_parser.exceptions import ModelGrammarFileOpen, ModelInputFileOpen, ModelInputFileEmpty, ModelParseError
-from xcm_parser.class_model_visitor import SubsystemVisitor
+from xcm_parser.class_model_visitor import SubsystemVisitor, Subsystem
 from arpeggio import visit_parse_tree, NoMatch
 from arpeggio.cleanpeg import ParserPEG
-from collections import namedtuple
 import os
 from pathlib import Path
 
-# This is the parse / visitor output
-Subsystem = namedtuple('Subsystem', 'subsystem domain classes rels metadata')
 
 class ClassModelParser:
     """
@@ -76,7 +73,7 @@ class ClassModelParser:
         return cls.parse()
 
     @classmethod
-    def parse(cls) -> (Subsystem, str):
+    def parse(cls) -> Subsystem:
         """
         Parse the model file and return the content
         :return:  The abstract syntax tree content of interest
@@ -115,14 +112,6 @@ class ClassModelParser:
             # Comment this part out if you want to retain the dot files
             cls.parse_tree_dot.unlink(True)
 
-        # Return the refined model data, checking sequence length
-        metadata = result.results.get('metadata', None)  # Optional section
-        subsys_name = result.results['subsystem_header'][0]  # Required by model parser
-        domain_name = result.results['domain_header'][0]  # Required by model parser
-        class_data = result.results['class_set'][0]  # Required by model parser
-        rel_data = result.results.get('rel_section', None)  # Optional section
-        return Subsystem(
-            subsystem=subsys_name, domain=domain_name, classes=class_data, rels=[] if not rel_data else rel_data[0],
-            metadata=None if not metadata else metadata[0]), cls.model_text
+        return result
 
 

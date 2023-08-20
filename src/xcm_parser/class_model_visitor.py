@@ -4,6 +4,7 @@ from arpeggio import PTNodeVisitor
 from collections import namedtuple
 
 ID = namedtuple('_ID', 'number superid')
+Subsystem = namedtuple('Subsystem', 'subsystem domain classes rels metadata')
 
 class SubsystemVisitor(PTNodeVisitor):
 
@@ -13,7 +14,16 @@ class SubsystemVisitor(PTNodeVisitor):
         """
         (LINEWWRAP* EOF) / (metadata? domain_header subsystem_header class_set rel_section? EOF)
         """
-        return children
+        metadata = children.results.get('metadata', None)
+        subsys_name = children.results['subsystem_header'][0]  # Required by model parser
+        domain_name = children.results['domain_header'][0]  # Required by model parser
+        class_data = children.results['class_set'][0]  # Required by model parser
+        rel_data = children.results.get('rel_section', [])  # Optional section
+        return Subsystem(
+            subsystem=subsys_name, domain=domain_name,
+            classes=class_data, rels=rel_data if not rel_data else rel_data[0],
+            metadata=None if not metadata else metadata[0]
+        )
 
     # Metadata
     @classmethod
