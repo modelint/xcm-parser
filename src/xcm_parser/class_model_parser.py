@@ -1,7 +1,7 @@
 """ class_model_parser.py – First attempt to parse class block """
 
 from xcm_parser.exceptions import ModelGrammarFileOpen, ModelInputFileOpen, ModelInputFileEmpty, ModelParseError
-from xcm_parser.class_model_visitor import SubsystemVisitor, Subsystem
+from xcm_parser.class_model_visitor import SubsystemVisitor, Subsystem_a
 from arpeggio import visit_parse_tree, NoMatch
 from arpeggio.cleanpeg import ParserPEG
 import os
@@ -73,7 +73,7 @@ class ClassModelParser:
         return cls.parse()
 
     @classmethod
-    def parse(cls) -> Subsystem:
+    def parse(cls) -> Subsystem_a:
         """
         Parse the model file and return the content
         :return:  The abstract syntax tree content of interest
