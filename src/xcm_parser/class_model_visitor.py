@@ -3,8 +3,10 @@
 from arpeggio import PTNodeVisitor
 from collections import namedtuple
 
-ID = namedtuple('_ID', 'number superid')
-Subsystem = namedtuple('Subsystem', 'subsystem domain classes rels metadata')
+ID_a = namedtuple('ID_a', 'number superid')
+"""Class identifier"""
+Subsystem_a = namedtuple('Subsystem_a', 'subsystem domain classes rels metadata')
+"""Complete subsystem class model along with subsystem and metadata header and domain data"""
 
 class SubsystemVisitor(PTNodeVisitor):
 
@@ -19,7 +21,7 @@ class SubsystemVisitor(PTNodeVisitor):
         domain_name = children.results['domain_header'][0]  # Required by model parser
         class_data = children.results['class_set'][0]  # Required by model parser
         rel_data = children.results.get('rel_section', [])  # Optional section
-        return Subsystem(
+        return Subsystem_a(
             subsystem=subsys_name, domain=domain_name,
             classes=class_data, rels=rel_data if not rel_data else rel_data[0],
             metadata=None if not metadata else metadata[0]
@@ -212,11 +214,11 @@ class SubsystemVisitor(PTNodeVisitor):
         """ '*'? 'I' ordinal? """
         itag = None
         if not children:
-            itag = ID(1, False)
+            itag = ID_a(1, False)
         else:
             super = True if children[0] == '*' else False
             tag_num = children[0] if not super else children[1]
-            itag = ID(int(tag_num), super)
+            itag = ID_a(int(tag_num), super)
         id = {'I': itag }
         return id
 
