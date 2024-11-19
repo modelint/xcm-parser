@@ -15,7 +15,7 @@ num_range = ordinal '-' ordinal
 metadata = metadata_header data_item*
 metadata_header = "metadata" EOL* // Metadata header
 data_item = INDENT item_name SP* (resource_item / text_item) EOL* // Metadata item
-item_name = iword delim word* // Meta data item starts with initial cap
+item_name = iword (delim word)* // Meta data item starts with initial cap
 resource_item = '>' SP* word (delim word)* // Resource is a name
 text_item = ':' SP* r'.*' // Field content can be any text
 
