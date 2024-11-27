@@ -201,10 +201,8 @@ class SubsystemVisitor(PTNodeVisitor):
         # 'R' gets swallowed by the parser since it is a literal, but 'O' shows up as a child
         # element for some reason. Not sure why 'O' is treated differently, but this complicates
         # the code below. Best solution is to clean up the grammar eventually.
-
         tag = 'OR' if node[0].value == 'O' else 'R'
-        rnum_index = 1 if tag == 'OR' else 0
-        rnum = int(rnum_index)
+        rnum = int(children.results['ordinal'][0])
         constraint = children[-1] == 'c'
         rtag = {tag: (rnum, constraint) }
         return rtag
