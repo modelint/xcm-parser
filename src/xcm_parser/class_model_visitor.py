@@ -170,7 +170,7 @@ class SubsystemVisitor(PTNodeVisitor):
     def visit_attr_tags(cls, node, children):
         """ '{' attr_tag (',' SP attr_tag )* '}' """
         tdict = {}  # Tag dictionary of value lists per tag
-        for tag in ['I', 'R']:  # Identifier and referential attr tags
+        for tag in ['I', 'R', 'OR']:  # Identifier and referential attr tags
             tdict[tag] = [c[tag] for c in children if tag in c]  # Create list of values per tag from children
         return tdict
 
