@@ -1,0 +1,323 @@
+metadata
+    Title : Ego Vehicle Subsystem / Vehicle Guidance Domain
+    Author : Leon Starr
+    Document ID : mint.guidance.ego.td.1
+    Version : Version 1.7.2
+    /// Creation date : November 25, 2019
+    Modification date : February 1, 2025
+    Organization : Model Integration, LLC / www.modelint.com
+    Copyright notice > MIT
+    Organization logo > mint
+domain Vehical Guidance, VG
+subsystem Ego Vehicle, EGO 150-199
+class Driving Lane Change, DLC
+attributes
+    Ego : Ego ID {I, R152}
+    Target lane inside division : Lane Division ID {I2, R152c}
+    Target lane outside division : Lane Division ID {I2, R152c}
+    Road segment : Road Segment ID {I2, R152}
+    Target lane open : Boolean = hello world
+    Traverse ok : Boolean = false
+    Premature crossing : Boolean = false
+    Lingering crossing : Boolean = false
+    Max lane change time exceeded : Boolean = false
+--
+class Active Driving Lane, ADL
+attributes
+    Ego : Ego ID {I, R151}
+    Current lane inside division : Lane Division ID {I2, R151}
+    Current lane outside division : Lane Division ID {I2, R151}
+    Road segment : Road Segment ID {I2, R151}
+    /Inner division traversable : Boolean
+    /Outer division traversable : Boolean
+--
+class Angular Intersection Lane Connector <import:Intersection>
+attributes
+    EL road segment {I}
+    EL inside division {I}
+    XL road segment {I}
+    XL inside division {I}
+--
+class Connector Traversal, CT
+attributes
+    EL road segment : Road Segment ID {I, R163}
+    EL inside division : Lane Division ID {I, R163}
+    XL road segment : Road Segment ID {R163}
+    XL inside division : Lane Division ID {R163}
+    Exit conduit : Conduit Role {R163}
+    Intersection : Intersection ID {R163}
+    Blocked : Boolean// = False
+--
+class Cross Traffic Lane, CTL
+attributes
+    EL road segment : Road Segment ID {I, R164}
+    EL inside division : Lane Division ID {I, R164}
+    XL road segment : Road Segment ID {I, R164}
+    Exit conduit : Conduit Role {I, R164}
+    Oncoming lane inside division : Lane Division ID {I, R164}
+    Oncoming road segment : Road Segment ID {I, R164}
+    Intersection : Intersection ID {I, R164}
+    Traffic : Boolean
+--
+///methods
+///    Oncoming traffic()
+///    No oncoming traffic()
+///--
+class Driving Lane, DL <import:Road>
+attributes
+    Inside division {I}
+    Outside division {I}
+    Road segment {I}
+--
+///methods
+///    Start monitoring target lane()
+///    Stop monitoring target lane()
+///    Lane status()
+///--
+class Ego Vehicle, EV
+attributes
+    ID : Ego ID
+    Personality {R153}
+    Speed : Speed
+    Heading : Heading
+    Mass : Mass
+--
+class Entrance Lane Approach, ELA
+attributes
+    Ego : Ego ID {I2, R160}
+    Target EL inside division : Lane Division ID {I, R160}
+    Road segment : Road Segment ID {I, R160}
+    Lead vehicle at interface : Boolean
+    Lane change pending : Boolean
+--
+class Intersection Crosswalk <import:Crosswalk>
+attributes
+    ID {I}
+--
+class Lane Change Behavior Specification, LCBS
+attributes
+    Personality : Personality Name {I, R154}
+    Max wait for open space : Duration
+    Max maneuver duration : Duration
+    Max lane change duration : Duration
+    Min advance indication : Duration
+    Min complete indication : Duration
+    Successive lane change inhibit period : Duration
+--
+class Lane Configuration Segment, LCS <import:Lane Reconfiguration>
+attributes
+    ID : LCS ID {I}
+    Road segment : Road Segment ID {I}
+--
+class Mid Block Crosswalk <import:Crosswalk>
+attributes
+    ID {I}
+--
+class Mid Block Crosswalk Approach
+attributes
+    Crosswalk : Crosswalk ID {I, R167}
+    Ego : Ego ID {I2, R167}
+--
+class Movement <import:Intersection>
+attributes
+    EL inside division : Lane Division ID {I}
+    EL road segment : Road Segment ID {I}
+    Exit conduit road segment : Road Segment ID {I}
+    Exit conduit : Conduit Role {I}
+    Intersection : Intersection ID {I}
+--
+class Multi Lane Maneuver, MLM
+attributes
+    Ego : Ego ID {I, R157}
+    Target lane inside divison {I2, R157}
+    Target lane outside division : Lane Division ID {I2, R157}
+    Road segment : Road Segment ID {I2, R157c}
+    Direction : Inner Outer
+    Completion turn signal : Turn Indicate
+    /Turn direction : Left Right
+    Abort requested : Boolean// = false
+--
+class Non Traveling Ego Vehicle, EVNT
+attributes
+    Ego : Ego ID {I, R156}
+--
+class Oncoming Traffic Yield Requirement, OTY_REQ <import:Intersection>
+attributes
+    EL road segment : Road Segment ID {I}
+    EL inside division : Lane Division ID {I}
+    Exit conduit road segment : Road Segment ID {I}
+    Exit conduit : Conduit Role {I}
+    Oncoming lane inside division : Lane Division ID {I}
+    Oncoming road segment : Road Segment ID {I}
+    Intersection : Intersection ID {I}
+--
+class On Road Ego Vehicle, RDEGO
+attributes
+    Ego : Ego ID {I, R150}
+    Road : Road ID {I2, R150}
+--
+class Personality
+attributes
+    Name : Personality Name {I}
+--
+class Planned Crosswalk Traversal
+attributes
+    Crosswalk : Crosswalk ID {I, R155}
+    EL inside division : Lane Division ID {R155}
+    EL road segment : Road Segment ID {R155}
+    Exit conduit road segment : Road Segment ID {R155}
+    Exit conduit : Conduit Role {R155}
+    Intersection : Intersection ID {R155}
+    Position : Entry_Exit
+--
+///methods
+///    Activate()
+///    Deactivate()
+///--
+class Planned Movement, PMOV
+attributes
+    EL inside division : Lane Division ID {I, R161, R166}
+    EL road segment : Road Segment ID {I, R161, R166}
+    Exit conduit road segment : Road Segment ID {R161, R166}
+    Exit conduit : Conduit Role {R161c}
+    Target XL inside division : Lane Division ID {R166}
+    Intersection : Intersection ID {R161}
+--
+class Protected Traversal
+attributes
+    EL road segment : Road Segment ID {I, R165}
+    EL inside division : Lane Division ID {I, R165}
+--
+class Yielding Traversal
+attributes
+    EL road segment : Road Segment ID {I, R165}
+    EL inside division : Lane Division ID {I, R165}
+--
+class Turn After Stop Traversal
+attributes
+    EL road segment : Road Segment ID {I, R165}
+    EL inside division : Lane Division ID {I, R165}
+--
+class Road <import:Road>
+attributes
+    ID {I}
+--
+class Signalized Angular Intersection Entrance Lane, SAI_EL <import:Intersection>
+attributes
+    Road segment : Road Segment ID {I}
+    Inside division : Lane Division ID {I}
+--
+class Traveling Ego Vehicle, EVTRAV
+attributes
+    Ego : Ego ID {I, R156}
+    LCS : LCS ID {R158}
+    LCS road segment : Road Segment ID {R158c}
+--
+///methods
+///    New lane( inside: Lane Division ID,
+///              outside: Lane Division ID )
+///    Update LCS( id: LCS ID, road segment: Road Segment ID )
+///--
+relationships
+    R150
+    is driving on, 1c Road
+    is being driven on, 1c Ego Vehicle
+    1 On Road Ego Vehicle
+    On Road Ego Vehicle.Ego -> Ego Vehicle.ID
+    On Road Ego Vehicle.Road -> Road.ID
+--
+    R151
+    is current path of travel for, 1c Traveling Ego Vehicle
+    is traveling in, 1 Driving Lane
+    1 Active Driving Lane
+    Active Driving Lane.Ego -> Traveling Ego Vehicle.Ego
+    Active Driving Lane.(Current lane inside division, Current lane outside division, Road segment) -> Driving Lane.(Inside division, Outside division, Road segment)
+--
+    R152
+    is traversed by, 1c Multi Lane Maneuver
+    needs to traverse, 1 Driving Lane
+    1 Driving Lane Change
+    Driving Lane Change.Ego -> Multi Lane Maneuver.Ego
+    Driving Lane Change.(Target lane inside division, Target lane outside division, Road segment) -> Driving Lane.(Inside division, Outside division, Road segment)
+--
+    R153
+    behavior is tuned by, 1 Personality
+    tunes behavior of, 1c Ego Vehicle
+    Ego Vehicle.Personality -> Personality.Name
+--
+    R154
+    defines, 1 Lane Change Behavior Specification
+    is defined for, 1 Personality
+    Lane Change Behavior Specification.Personality -> Personality.Name
+--
+    R155
+    must traverse, Mc Intersection Crosswalk
+    must be traversed in, 1c Planned Movement
+    1 Planned Crosswalk Traversal
+    Planned Crosswalk Traversal.Crosswalk -> Intersection Crosswalk.ID
+    Planned Crosswalk Traversal.(EL inside division, EL road segment, Exit conduit road segment, Exit conduit, Intersection) -> Planned Movement.(EL inside division, EL road segment, Exit conduit road segment, Exit conduit, Intersection)
+--
+    R156
+    On Road Ego Vehicle +
+        Non Traveling Ego Vehicle
+        Traveling Ego Vehicle
+    <subclass>.Ego -> On Road Ego Vehicle.Ego
+--
+    R157
+    is desired lane of, 1c Traveling Ego Vehicle
+    wants to get into, 1c Driving Lane
+    1 Multi Lane Maneuver
+    Multi Lane Maneuver.Ego -> Traveling Ego Vehicle.Ego
+    Multi Lane Maneuver.(Target lane inside division, Target lane outside division, Road segment) -> Driving Lane.(Inside division, Outside division, Road segment)
+--
+    R158
+    envelopes path of, 1c Traveling Ego Vehicle
+    is driving through, 1 Lane Configuraton Segment
+    Traveling Ego Vehicle.(LCS, LCS road segment) -> Lane Configuration Segment.(ID, Road segment)
+--
+    R160
+    is approaching, 1c Signalized Angular Intersection Entrance Lane
+    is being approached by, 1c Movement
+    1 Entrance Lane Approach
+    Entrance Lane Approach.(Road segment, Target EL inside division) -> Signalized Angular Intersection Entrance Lane.(Road segment, Inside division)
+    Entrance Lane Approach.Ego -> Active Drivign Lane.Ego
+--
+    R161
+    is planned by, 1c Entrance Lane Approach
+    plans, 1 Movement
+    1 Planned Movement
+    Planned Movement.(EL inside division, EL road segment, Exit conduit road segment, Exit conduit, Intersection) -> Movement.(EL inside division, EL road segment, Exit conduit road segment, Exit conduit, Intersection)
+--
+    R163
+    is traversing, 1c Angular Intersection Line Connector
+    is being traversed by, 1c Planned Movement
+    1 Connector Traversal
+    Connector Traversal.(EL inside division, EL road segment, Exit conduit, XL road segment, Intersection) -> Planned Movement.(EL inside division, EL road segment, Exit conduit road segment, Exit conduit, Intersection)
+    Connector Traversal.(EL inside division, EL road segment, XL road segment) -> Angular Intersection Lane Connector.(EL inside division, EL road segment, XL road segment)
+--
+    R164
+    observes traffic from, Mc Oncoming Traffic Yield Requirement
+    is a source of traffic observed during, 1c Connector Traversal
+    1 Cross Traffic Lane
+    Connector Traversal.(EL inside division, EL road segment) -> Planned Movement.(EL inside division, EL road segment)
+    Connector Traversal.(EL road segment, EL inside division, XL road segment, XL inside division) -> Angular Intersection Lane Connector.(EL road segment, EL inside division, XL road segment, XL inside division)
+--
+    R165
+    Connector Traversal+
+        Protected Traversal
+        Yielding Traversal
+        Turn After Stop Traversal
+    <subclass>.(EL road segment, EL inside division) -> Connector Traversal.(EL road segment, EL inside division)
+--
+    R166
+    is planned exit for, 1c Planned Movement
+    plans to exit on, 1 Angular Intersection Line Connector
+    Planned Movement.(EL road segment, EL inside division, Exit conduit road segment, Target XL inside division) -> Angular Intersection Lane Connector.(EL road segment, EL inside division, XL road segment, XL inside division)
+--
+    R167
+    is approaching, 1c Mid Block Crosswalk
+    is being approached by, 1c Traveling Ego Vehicle
+    1 Mid Block Crosswalk Approach
+    Mid Block Crosswalk Approach.Crosswalk -> Mid Block Crosswalk.ID
+    Mid Block Crosswalk Approach.Ego -> Traveling Ego Vehicle.Ego
+--

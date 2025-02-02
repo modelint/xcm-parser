@@ -76,10 +76,10 @@ subclass = INDENT INDENT icaps_name EOL*  // A subclass class name
 
 // Genref
 genref = single_line_genref / binref+ // Either abbreviated <subclass> source or explicit source for each subclass
-single_line_genref = INDENT allsubs_attrs SP '->' SP target_attrs (',' SP itag)? EOL* // Abbreviated in a single line
+single_line_genref = INDENT allsubs_attrs SP '->' (WRAP / SP) target_attrs (',' SP itag)? EOL* // Abbreviated in a single line
 
 // Reference
-binref = INDENT source_attrs SP '->' SP target_attrs (',' SP itag)? EOL* // Single class to single class ref
+binref = INDENT source_attrs SP '->' (WRAP / SP) target_attrs (',' SP itag)? EOL* // Single class to single class ref
 source_attrs = single_class_attrs // So parse visitor can define distinct source target dict keys
 target_attrs = single_class_attrs
 allsubs_attrs = '<subclass>' attr_set  // Abbreviation for same attrs from all subclasses in a generalization
@@ -106,6 +106,7 @@ INDENT = "    "  // Need INDENT for clarity and to signal unstructured lines of 
 block_end = "--" EOL*  // Signifies end of a block (within section)
 
 // Whitespace and comments
+WRAP = EOL INDENT INDENT
 EOL = SP* COMMENT? '\n' // end of line: Comments, blank lines, whitespace we can omit from the parser result
 COMMENT = '//' r'.*' // Comment slashes don't work if included in the regular expression for some reason
 SP = " "
