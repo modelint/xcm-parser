@@ -1,0 +1,411 @@
+metadata
+    Title : Lane Reconfiguration Subsystem / Vehicle Guidance Domain
+    Author : Leon Starr
+    Document ID : mint.guidance.lanereconfig.td.4
+    Version : Version 1.8.8
+    /// Creation date : November 29, 2019
+    Modification date : February 2, 2025
+    Organization : Model Integration, LLC / www.modelint.com
+    Copyright notice > MIT
+    Organization logo > mint
+domain Vehical Guidance, VG
+subsystem Lane Reconfiguration, LANE 200-250
+class Conduit <import:Road>
+attributes
+    Road segment {I}
+    Role {I}
+--
+class Convergence
+attributes
+    LR ID : DLR ID {I, R211}
+    Road segment : Road Segment ID {I, R211}
+--
+class Convergence Entrance Lane
+attributes
+    LR ID : DLR ID {I, R205}
+    Inside division : Lane Division ID {I, R205}
+    Outside division : Lane Division ID {I, R205}
+    Road segment : Road Segment ID {I, R205}
+--
+class Convergence Lane Zipper Pair
+attributes
+    LR ID : DLR ID {I, I2, R210}
+    Inner zipper division : Lane Division ID {I, R210}
+    Shared zipper division : Lane Division ID {I, I2, R210}
+    Outer zipper division : Lane Division ID {I2, R210}
+    Road segment : Road Segment ID {I, I2, R210}
+--
+class Convergence Exit Lane
+attributes
+    LR ID : DLR ID {I, R217, R219, R225}
+    Inside division : Lane Division ID {I, R217, R225}
+    Outside division : Lane Division ID {I, R217}
+    Road segment : Road Segment ID {I, R217, R219, R225}
+--
+class Dead End
+attributes
+    LR ID : DLR ID {I, R216}
+    Road segment : Road Segment ID {I, R216}
+    Shape : Open Closed
+--
+class Driving Lane <import:Road>
+attributes
+    Inside division : Lane Division ID {I, R10}
+    Outside division : Lane Division ID {I, R10}
+    Road segment : Road Segment ID {I, R10}
+--
+class Driving Lane Event
+attributes
+    ID : DL Event ID {I}
+    Inside division : Lane Division ID {R215}
+    Outside division : Lane Division ID {R215}
+    Road segment : Road Segment ID {R215}
+    Location : Distance
+--
+class Driving Lane Reconfiguration
+attributes
+    ID : DLR ID {I}
+    Road segment : Road Segment ID {I, R206, R202}
+    Conduit : Conduit Role {R206}
+    LCS : LCS ID {R202}
+    Start location : Distance
+--
+class Driving Lane Initiation
+attributes
+    LR ID : DLR ID {I, R204}
+    Inside division : Lane Division ID {I, R204}
+    Outside division : Lane Division ID {I, R204}
+    Road segment : Road Segment ID {I, R204}
+--
+class Driving Lane Termination
+attributes
+    LR ID : DLR ID {I, R204}
+    Inside division : Lane Division ID {I, R204}
+    Outside division : Lane Division ID {I, R204}
+    Road segment : Road Segment ID {I, R204}
+--
+class Fork Lane
+attributes
+    LR ID : DLR ID {I, R217, R211}
+    Inside division : Lane Division ID {I, R217}
+    Outside division : Lane Division ID {I, R217}
+    Source lane inside : Lane Division ID {R208c}
+    Source lane outside : Lane Division ID {R208c}
+    Road segment : Road Segment ID {I, R217, R211, R208}
+    Entrance : Distance
+--
+class Lateral Reconfiguration
+attributes
+    LR ID : DLR ID {I, R212}
+    Road segment : Road Segment ID {I, R212}
+    Direction : Turn Dir
+--
+class Longitudinal Reconfiguration
+attributes
+    LR ID : DLR ID {I, R212}
+    Road segment : Road Segment ID {I, R212}
+--
+class Loop End
+attributes
+    LR ID : DLR ID {I, R216}
+    Road segment : Road Segment ID {I, R216}
+--
+class Internal Reconfiguration
+attributes
+    LR ID : DLR ID {I, R212}
+    Road segment : Road Segment ID {I, R212}
+--
+class Intersection Entrance Lane <import:Intersection>
+attributes
+    Inside division : Lane Division ID {I}
+    Outside division : Lane Division ID {I}
+    Road segment : Road Segment ID {I}
+--
+class Intersection Entrance Reconfiguration Role
+attributes
+    LR ID : DLR ID {I, R205}
+    Road segment : Road Segment ID {I, R205, R201}
+    Inside division : Lane Division ID {I, R205, R201}
+    Outside division : Lane Division ID {I, R205, R201}
+--
+class Intersection Exit Lane <import:Intersection>
+attributes
+    Inside division : Lane Division ID {I}
+    Outside division : Lane Division ID {I}
+    Road segment : Road Segment ID {I}
+--
+class Intersection Exit Reconfiguration Role
+attributes
+    LR ID : DLR ID {I, R217}
+    Road segment : Road Segment ID {I, R217, R200}
+    Inside division : Lane Division ID {I, R217, R200}
+    Outside division : Lane Division ID {I, R217, R200}
+--
+class Intersection Interface <import:Intersection>
+attributes
+    Road segment : Road Segment ID {I, I2, R52, R216}
+    Intersection : Intersection ID {I, R52}
+    LR ID : DLR ID {I2, R216}
+--
+class Lane Configuration Segment
+attributes
+    ID : LCS ID {I}
+    Conduit : Conduit Role {R203}
+    Road segment : Road Segment ID {I, R203}
+--
+class Merge Lane
+attributes
+    LR ID : DLR ID {I, R205, R211}
+    Inside division : Lane Division ID {I, R205}
+    Outside division : Lane Division ID {I, R205}
+    Dest lane inside : Lane Division ID {R209c}
+    Dest lane outside : Lane Division ID {R209c}
+    Road segment : Road Segment ID {I, R205, R211, R209}
+    Last chance : Distance
+--
+class Mid Road Turn Lane
+attributes
+    LR ID : DLR ID {I, R205, R221}
+    Inside division : Lane Division ID {I, R205}
+    Outside division : Lane Division ID {I, R205}
+    Road segment : Road Segment ID {I, R205, R221}
+--
+class Obstacle Event
+attributes
+    ID : DL Event ID {I, R222}
+    Obstacle : Obstacle Type
+    Mitigation spec : Spec Name {R224}
+--
+class Obstacle Mitigation Specification
+attributes
+    Name : Spec Name {I}
+--
+class Reconfiguration Role
+attributes
+    LR ID : DLR ID {I, R207}
+    Inside division : Lane Division ID {I, R207}
+    Outside division : Lane Division ID {I, R207}
+    Road segment : Road Segment ID {I, R207}
+--
+class Lane Usage Specification <import:TBD>
+attributes
+    Name {I}
+--
+class Split
+attributes
+    LR ID : DLR ID {I, R211}
+    Road segment : Road Segment ID {I, R211}
+--
+class Split Entrance Lane
+attributes
+    LR ID : DLR ID {I, R205, R213}
+    Inside division : Lane Division ID {I, R205, R220}
+    Outside division : Lane Division ID {I, R205, R220}
+    Road segment : Road Segment ID {I, R205, R213}
+--
+class Split Exit Lane
+attributes
+    LR ID : DLR ID {I, R217}
+    Inside division : Lane Division ID {I, R217}
+    Outside division : Lane Division ID {I, R217}
+    Road segment : Road Segment ID {I, R217}
+--
+class Split Lane Division Pair
+attributes
+    Inside split exit lane : Lane Division ID {I, R218}
+    Outside split exit lane : Lane Division ID {I2, R218}
+    Inner division : Lane Division ID {I, R218}
+    Shared division : Lane Division ID {I, I2, R218}
+    Outer division : Lane Division ID {I2, R218}
+    Road segment : Road Segment ID {I, I2, R218}
+--
+class Surface Change Event
+attributes
+    ID : DL Event ID {I, R222}
+    New condition : Surface Condition
+    New pavement : Surface Material
+    Surface driving spec : Spec Name {R223}
+--
+class Surface Driving Specification <import:TBD>
+attributes
+    Name {I}
+--
+class Traversal Policy Event
+attributes
+    ID : DL Event ID {I, R298}
+    New status : Lane Status
+    Side : Inner Outer
+--
+class Usage Policy Event
+attributes
+    ID : DL Event ID {I, R298}
+    Restriction spec : Spec Name {R214}
+--
+relationships
+    R200
+    fulfills, 1 Intersection Exit Reconfiguration Role
+    is fullfiled by, 1 Intersection Exit Lane
+    Intersection Exit Reconfiguration Role.(Inside division, Outside division, Road segment) ->
+        Intersection Exit Lane.(Inside division, Outside division, Road segment)
+--
+    R201
+    fulfills, 1 Intersection Entrance Reconfiguration Role
+    is fullfiled by, 1 Intersection Entrance Lane
+    Intersection Entrance Reconfiguration Role.(Inside division, Outside division, Road segment) ->
+        Intersection Entrance Lane.(Inside division, Outside division, Road segment)
+--
+    R202
+    initiates, M Driving Lane Reconfiguration
+    is initiated in, 1 Lane Configuration Segment
+    Driving Lane Reconfiguration.(Conduit, Road segment) -> Conduit.(Role, Road segment)
+--
+    R203
+    numbers driving lanes in, 1 Conduit
+    driving lanes are numbered by, M Lane Configuration Segment
+    Lane Configuration Segment.(Conduit, Road segment) -> Conduit.(Role, Road segment)
+--
+    R204
+    Reconfiguration Role +
+        Driving Lane Initiation
+        Driving Lane Termination
+    <subclass>.(LR ID, Inside division, Road segment) -> Reconfiguration Role.(LR ID, Inside division, Road segment)
+--
+    R205
+    Driving Lane Termination +
+        Merge Lane
+        Convergence Entrance Lane
+        Split Entrance Lane
+        Mid Road Turn Lane
+        Intersection Entrance Reconfiguration Role
+    <subclass>.(LR ID, Inside division, Road segment) -> Driving Lane Termination.(LR ID, Inside division, Road segment)
+--
+    R206
+    lane structure is modified by, M Driving Lane Reconfiguration
+    modifies lane structure in, 1 Conduit
+    Driving Lane Reconfiguration.(Conduit, Road Segment) -> Conduit.(Role, Road segment)
+--
+    R207
+    initiates or terminates, M Driving Lane
+    is initiated or terminated in, Mc Driving Lane Reconfiguration
+    1 Reconfiguration Role
+    Reconfiguration Role.(Inside division, Outside division, Road segment) ->
+        Driving Lane.(Inside division, Outside division, Road segment)
+    Reconfiguration Role.(LR ID, Road Segment) ->
+        Driving Lane Reconfiguration.(LR ID, Road segment)
+--
+    R208
+    delivers traffic to, Mc Fork Lane
+    siphons traffic from, 1 Driving Lane
+    Fork Lane.(Source lane inside, Source lane outside, Road segment) ->
+        Driving Lane.(Inside division, Outside division, Road segment)
+--
+    R209
+    diverts traffic into, 1 Driving Lane
+    accepts traffic from, Mc Merge Lane
+    Merge Lane.(Dest lane inside, Dest lane outside, Road segment) ->
+        Driving Lane.(Inside division, Outside division, Road segment)
+--
+    R210
+    zippers outside traffic into, 1 Convergence Entrance Lane
+    zippers inside traffic into, 1 Convergence Entrance Lane
+    1 Convergence Lane Zipper Pair
+    Convergence Lane Zipper Pair.(LR ID, Inside division, Shared zipper division, Road segment) ->
+        Convergence Entrance Lane.(LR ID, Inside zipper division, Outside division, Road segment).'zippers inside'
+    Convergence Lane Zipper Pair.(LR ID, Shared zipper division, Outside division, Road segment) ->
+        Convergence Entrance Lane.(LR ID, Inside zipper division, Outside division, Road segment).'zippers outside'
+--
+    R211
+    Internal Reconfiguration +
+        Fork Lane
+        Convergence
+        Split
+    <subclass>.(LR ID, Road segment) -> Internal Reconfiguration.(LR ID, Road segment)
+--
+    R212
+    Driving Lane Reconfiguration +
+        Longitudinal Reconfiguration
+        Internal Reconfiguration
+        Lateral Reconfiguration
+    <subclass>.(LR ID, Road segment) -> Driving Lane Reconfiguraton.(ID, Road segment)
+--
+    R213
+    starts at, 1 Split Entrance Lane
+    is start of, 1 Split
+    Split Entrance Lane.(LR ID, Road segment) -> Split.(LR ID, Road segment)
+--
+    R214
+    will adopt, 1 Lane Usage Specification
+    will be adopted by, Mc Usage Policy Event
+    Usage Policy Event.Restriction spec -> Restriction Specification.Name
+--
+    R215
+    driving behavior is influenced by, Mc Driving Lane Event
+    marks a significant influence to driving behavior in, 1 Driving Lane
+    Driving Lane Event.(Inside division, Outside division, Road segment) ->
+        Driving Lane.(Inside division, Outside division, Road segment)
+--
+    R216
+    Longitudinal Reconfiguration +
+        Dead End
+        Loop End
+        Intersection Interface
+    <subclass>.(LR ID, Road segment) -> Longitudinal Reconfiguration.(LR ID, Road segment)
+--
+    R217
+    Driving Lane Initiation +
+        Fork Lane
+        Intersection Exit Reconfiguration Role
+        Split Exit Lane
+        Convergence Exit Lane
+    <subclass>.(LR ID, Inside division, Outside division, Road segment) ->
+        Driving Lane Initiation.(LR ID, Inside division, Outside division, Road segment)
+--
+    R218
+    divides inside traffic from, 1 Split Exit Lane
+    divides outside traffic from, 1 Split Exit Lane
+    1 Split Lane Division Pair
+    Split Lane Division Pair.(Inner split exit lane, Inner division, Outer division, Road segment) ->
+        Split Exit Lane.(LR ID, Inner division, Outer division, Road segment).'divides inside traffic from'
+    Split Lane Division Pair.(Outer split exit lane, Shared division, Outer division, Road segment) ->
+        Split Exit Lane.(LR ID, Inner division, Outer division).'divides outside traffic from'
+--
+    R219
+    is end of, 1 Convergence
+    ends at, 1 Convergence Exit Lane
+    Convergence Exit Lane.(LR ID, Road segment) -> Convergence.(LR ID, Road segment)
+--
+    R220
+    separates traffic from, 1 Split Entrance Lane
+    separates traffic into, 1 Split Lane Division Pair
+    Split Entrance Lane.(LR ID, Inside division, Road segment) ->
+        Split Lane Division Pair.(LR ID, Inside split lane, Road segment)
+--
+    R221
+    allows traffic to escape laterally via, M Mid Road Turn Lane
+    is lateral traffic escape in, 1 Lane Reconfiguration
+    Mid Road Turn Lane.(LR ID, Road segment) -> Lateral Reconfiguration.(LR ID, Road segment)
+--
+    R222
+    Driving Lane Event +
+        Usage Policy Event
+        Traversal Policy Event
+        Surface Change Event
+        Obstacle Event
+    <subclass>.ID -> Driving Lane Event.ID
+--
+    R223
+    drives over surface according to, 1 Surface Driving Specification
+    defines driving policy on, Mc Surface Change Event
+    Surface Change Event.Surface -> Driving Specification.Name
+--
+    R224
+    requires mitigation defined by, 1 Obstacle Mitigation Specification
+    defines mitigation policy for, Mc Obstacl Event
+    Obstacle Event.Mitigation spec -> Obstacle Mitigation Specification.Name
+--
+    R225
+    consolidates traffic into, 1 Convergence Exit Lane
+    consolidates traffic from, 1 Convergence Lane Zipper Pair
+    Convergence Exit Lane.(LR ID, Inside Division, Road segment) ->
+        Convergence Zipper Lane Pair.(LR ID, Inside zipper lane, Road segment)
+--

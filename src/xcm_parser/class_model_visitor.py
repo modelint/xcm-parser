@@ -311,26 +311,55 @@ class SubsystemVisitor(PTNodeVisitor):
         items = { "assoc_mult": children[0], "assoc_cname": children[1] }
         return items
 
-    @classmethod
-    def visit_binref(cls, node, children):
-        """ INDENT source_attrs SP '->' SP target_attrs (',' SP itag)? EOL """
-        id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
-        ref = {'source': children[0], 'target': children[1], 'id': id}
-        return ref
+    # It seems that this visitor isn't required since ref1 and ref2 do all the work
+
+    # @classmethod
+    # def visit_binref(cls, node, children):
+    #     """ INDENT source_attrs SP '->' SP target_attrs reflex? EOL """
+    #     # """ INDENT source_attrs SP '->' SP target_attrs (',' SP itag)? EOL """
+    #     # Not sure why itag is included, disabling for now
+    #     # id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
+    #     # ref = {'source': children[0], 'target': children[1], 'id': id}
+    #     ref = {'source': children[0], 'target': children[1]}
+    #     # if children.results.get('reflex'):
+    #     #     ref['reflexive_phrase'] = children.results['reflex']
+    #     return ref
 
     @classmethod
+    def visit_reflex(cls, node, children):
+        """ '.' QUOTE phrase QUOTE """
+        return children[1]
+
     def visit_ref1(cls, node, children):
         """ binref """
-        id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
-        ref = { 'ref1': {'source': children[0], 'target': children[1], 'id': id}}
+        ref = { 'ref1': {'source': children[0], 'target': children[1]}}
+        if len(children) > 2:
+            ref['ref1']['reflexive_phrase'] = children[2]
         return ref
 
-    @classmethod
     def visit_ref2(cls, node, children):
         """ binref """
-        id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
-        ref = { 'ref2': {'source': children[0], 'target': children[1], 'id': id}}
+        ref = { 'ref2': {'source': children[0], 'target': children[1]}}
+        if len(children) > 2:
+            ref['ref2']['reflexive_phrase'] = children[2]
         return ref
+
+    # Commented out methods assume that an ID can be specified in the binref, which was tentatively
+    # removed
+
+    # @classmethod
+    # def visit_ref1(cls, node, children):
+    #     """ binref """
+    #     id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
+    #     ref = { 'ref1': {'source': children[0], 'target': children[1], 'id': id}}
+    #     return ref
+
+    # @classmethod
+    # def visit_ref2(cls, node, children):
+    #     """ binref """
+    #     id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
+    #     ref = { 'ref2': {'source': children[0], 'target': children[1], 'id': id}}
+    #     return ref
 
     # Generalization
     @classmethod
@@ -364,8 +393,9 @@ class SubsystemVisitor(PTNodeVisitor):
     @classmethod
     def visit_single_line_genref(cls, node, children):
         """ INDENT allsubs_attrs SP '->' SP target_attrs (',' SP itag)? EOL """
-        id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
-        grefs = {'source': children[0], 'target': children[1], 'id': id}
+        # id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
+        # grefs = {'source': children[0], 'target': children[1], 'id': id}
+        grefs = {'source': children[0], 'target': children[1]}
         return grefs
 
     @classmethod

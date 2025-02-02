@@ -8,7 +8,8 @@ diagrams = [
     "elevator",
     "intersection",
     "sheet",
-    "ego"
+    "ego",
+    "lane_reconfig"
 ]
 
 @pytest.mark.parametrize("model", diagrams)
