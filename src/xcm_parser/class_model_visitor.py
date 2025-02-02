@@ -158,6 +158,12 @@ class SubsystemVisitor(PTNodeVisitor):
         return items
 
     @classmethod
+    def visit_default_value(cls, node, children):
+        """ dval """
+        name = ''.join(children)
+        return {'default_value': name }
+
+    @classmethod
     def visit_attr_name(cls, node, children):
         """ icaps_name """
         name = ''.join(children)

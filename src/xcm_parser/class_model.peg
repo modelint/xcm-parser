@@ -34,7 +34,8 @@ ee_header = "ee" SP acaps_name EOL*
 // Attributes
 attr_block = attr_header attribute+ // A set of attributes
 attr_header = "attributes" EOL*
-attribute = INDENT derived? attr_name (' : ' type_name)? (SP attr_tags)? EOL*
+attribute = INDENT derived? attr_name (' : ' type_name)? (SP attr_tags)? default_value? EOL*
+default_value = SP '=' SP dval
 derived = '/'
 attr_name = icaps_name
 type_name = icaps_name
@@ -99,6 +100,7 @@ ordinal = r'[1-9][0-9]*' // A counting number starting at 1
 phrase = lword (delim lword)*  // Relationship phrase
 mult = r'[1M]c?' // Binary relationship multiplicity, Shlaer-Mellor notation
 rnum = r'O?R[1-9][0-9]*' // Relationship number
+dval = r'[\S][\S ]+' // Default value
 delim = r'[ _]' // Delimiter used inside of names
 INDENT = "    "  // Need INDENT for clarity and to signal unstructured lines of text
 block_end = "--" EOL*  // Signifies end of a block (within section)
