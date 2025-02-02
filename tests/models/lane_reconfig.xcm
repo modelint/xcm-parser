@@ -310,9 +310,9 @@ relationships
     zippers inside traffic into, 1 Convergence Entrance Lane
     1 Convergence Lane Zipper Pair
     Convergence Lane Zipper Pair.(LR ID, Inside division, Shared zipper division, Road segment) ->
-        Convergence Entrance Lane.(LR ID, Inside zipper division, Outside division, Road segment).'zippers inside'
+        Convergence Entrance Lane.(LR ID, Inside zipper division, Outside division, Road segment).zippers inside
     Convergence Lane Zipper Pair.(LR ID, Shared zipper division, Outside division, Road segment) ->
-        Convergence Entrance Lane.(LR ID, Inside zipper division, Outside division, Road segment).'zippers outside'
+        Convergence Entrance Lane.(LR ID, Inside zipper division, Outside division, Road segment).zippers outside
 --
     R211
     Internal Reconfiguration +
@@ -365,9 +365,9 @@ relationships
     divides outside traffic from, 1 Split Exit Lane
     1 Split Lane Division Pair
     Split Lane Division Pair.(Inner split exit lane, Inner division, Outer division, Road segment) ->
-        Split Exit Lane.(LR ID, Inner division, Outer division, Road segment).'divides inside traffic from'
+        Split Exit Lane.(LR ID, Inner division, Outer division, Road segment).divides inside traffic from
     Split Lane Division Pair.(Outer split exit lane, Shared division, Outer division, Road segment) ->
-        Split Exit Lane.(LR ID, Inner division, Outer division).'divides outside traffic from'
+        Split Exit Lane.(LR ID, Inner division, Outer division).divides outside traffic from
 --
     R219
     is end of, 1 Convergence

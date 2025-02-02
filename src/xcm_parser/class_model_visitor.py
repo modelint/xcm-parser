@@ -327,8 +327,8 @@ class SubsystemVisitor(PTNodeVisitor):
 
     @classmethod
     def visit_reflex(cls, node, children):
-        """ '.' QUOTE phrase QUOTE """
-        return children[1]
+        """ '.' phrase """
+        return children[0]
 
     def visit_ref1(cls, node, children):
         """ binref """

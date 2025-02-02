@@ -1,0 +1,200 @@
+metadata
+    Title : Crosswalk Subsystem / Vehicle Guidance Domain
+    Author : Leon Starr
+    Document ID : mint.guidance.crosswalk.td.2
+    Version : Version 0.9.6
+    /// Creation date : June 28, 2019
+    Modification date : January 31, 2025
+    Organization : Model Integration, LLC / www.modelint.com
+    Copyright notice > MIT
+    Organization logo > mint
+domain Vehical Guidance, VG
+subsystem Crosswalk, XWALK 50-99
+class Approached Walk Signal
+attributes
+    Signal : Walk Signal Span ID {I, R79}
+    Ego : Ego ID {R79}
+    Walk : Boolean
+--
+class Crosswalk, X
+attributes
+    ID : Crosswalk ID {I}
+    Inner access : Crosswalk Access ID {I2, R71}
+    Inner road segment : Road segment ID {I2, R71}
+    Outer access : Crosswalk Access ID {I2, R71}
+    Outer road segment : Road segment ID {I2, R71}
+--
+class Crosswalk Access, XA
+attributes
+    ID : Crosswalk Access ID {I}
+    Road segment : Road segment ID {I, R73}
+    Location : Distance
+--
+class Crosswalk Approach
+attributes
+    Crosswalk : Crosswalk ID {I, R77}
+    Ego : Ego ID {R77}
+    Hold status : Hold Status = .released
+--
+class Crosswalk Lane Traversal
+attributes
+    Crosswalk : Crosswalk ID {I, R70}
+    Inside division : Lane Division ID {I, R70}
+    Outside division : Lane Division ID {I, R70}
+    Road segment : Road segment ID {I, R70c}
+    Approach line : Distance Ahead
+    Exit line : Distance Ahead
+--
+class Driving Lane <import:Road>
+attributes
+    Inside division : Lane Division ID {I}
+    Outside division : Lane Division ID {I}
+    Road segment : Road segment ID {I}
+--
+class Ego Vehicle, EV <import:Ego>
+attributes
+    ID {I}
+--
+class Island <import:Road>
+attributes
+    ID {I}
+    Road segment {I}
+--
+class Interface Crosswalk Span
+attributes
+    Crosswalk : Crosswalk ID {I, R80}
+    Road segment : Road segment ID {I, R80}
+    Intersection : Intersection ID {I, R80}
+--
+class Intersection Crosswalk
+attributes
+    ID : Crosswalk ID {I, R72}
+--
+class Intersection Interface <import:Intersection>
+attributes
+    Road segment : Road segment ID {I}
+    Intersection : Intersection ID {I}
+--
+class Island Crosswalk Access, IXA
+attributes
+    ID : Crosswalk Access ID {I, R73}
+    Island : Island ID {R75}
+    Road segment {I, R75}
+--
+class Median <import:Road>
+attributes
+    ID {I}
+    Road segment {I}
+--
+class Median Crosswalk Access, MXA
+attributes
+    ID : Crosswalk Access ID {I, R73}
+    Median : Flow separator ID {R76}
+    Road segment : Road segment ID {I, R76}
+--
+class Mid Block Crosswalk
+attributes
+    ID : Crosswalk ID {I, R72}
+--
+class Road Edge <import:Road>
+attributes
+    Road segment {I}
+    Side {I}
+--
+class Roadside Crosswalk Access, RXA
+attributes
+    ID : Crosswalk Access ID {I, R73}
+    Road segment : Road segment ID {I, R74}
+    Side : Left Right {R74}
+--
+class Signal Controlled Crosswalk
+attributes
+    Crosswalk : Crosswalk ID {I, R78}
+    Walk signal span : Walk Signal Span ID {R78}
+--
+class Walk Duration
+attributes
+    Signal : Walk Signal Span ID {I, R81}
+    Time remaining : Seconds
+--
+class Walk Signal Span, WSS
+attributes
+    ID : Walk Signal Span ID {I}
+--
+relationships
+    R70
+    is crossed by, Mc Crosswalk
+    crosses, M Driving Lane
+    1 Crosswalk Lane Traversal
+    Crosswalk Lane Traversal.Crosswalk -> Crosswalk.ID
+    Crosswalk Lane Traversal.(Inside division, Outside division, Road segment) -> Driving Lane.(Inside division, Outside division, Road segment)
+--
+    R71
+    terminates on inside, M Crosswalk Access
+    terminates on outside, M Crosswalk Access
+    1 Crosswalk
+    Crosswalk.(Inner access, Inner road segment) -> Crosswalk Access.(ID, Road segment).terminates on inside
+    Crosswalk.(Outer access, Outer road segment) -> Crosswalk Access.(ID, Road segment).terminates on outside
+
+--
+    R72
+    Crosswalk +
+        Intersection Crosswalk
+        Mid Block Crosswalk
+    <subclass>.ID -> Crosswalk.ID
+--
+    R73
+    Crosswalk Access +
+        Roadside Crosswalk Access
+        Island Crosswalk Access
+        Median Crosswalk Access
+    <subclass>.ID -> Crosswalk Access.ID
+--
+    R74
+    is located at, 1 Road Edge
+    is location of, Mc Roadside Crosswalk Access
+    Road Crosswalk Access.(Road segment, Side) -> Road Edge.(Road segment, Side)
+--
+    R75
+    is located at, 1 Island
+    is location of, Mc Island Crosswalk Access
+    Island Crosswalk Access.(Road segment, Side) -> Road Edge.(Road segment, Side)
+--
+    R76
+    is located at, 1 Median 
+    is location of, Mc Median Crosswalk Access
+    Median Crosswalk Access.(Road segment, Side) -> Road Edge.(Road segment, Side)
+--
+    R77
+    is approaching, Mc Crosswalk
+    is being approached by, 1c Ego Vehicle
+    1 Crosswalk Approach
+    Crosswalk Approach.Crosswalk -> Crosswalk.ID
+    Crosswalk Approach.Ego -> Ego Vehicle.ID
+--
+    R78
+    pedestrian movement is gated by, 1c Walk Signal Span
+    gates pedestrian movement in, M Crosswalk
+    1 Signal Controlled Crosswalk
+    Signal Controlled Crosswalk.Crosswalk -> Crosswalk.ID
+    Signal Controlled Crosswalk.Walk signal span -> Walk Signal Span.ID
+--
+    R79
+    is approaching, Mc Walk Signal Span
+    is being approached by, 1 Ego Vehicle
+    1 Approached Walk Signal
+    Approached Walk Signal.Signal -> Walk Signal Span.ID
+    Approached Walk Signal.Ego -> Ego Vehicle.ID
+--
+    R80
+    crosses along, M Intersection Interface
+    is location of, Mc Intersection Crosswalk
+    1 Interface Crosswalk Span
+    Interface Crosswalk Span.Crosswalk -> Crosswalk.ID
+    Interface Crosswalk Span.(Road segment, Intersection) -> Intersection Interface.(Road segment, Intersection)
+--
+    R81
+    is being indicated at, 1 Approached Walk Signal
+    is indicating, 1c Walk Duration
+    Walk Duration.Signal -> Approached Walk Signal.Signal
+--
