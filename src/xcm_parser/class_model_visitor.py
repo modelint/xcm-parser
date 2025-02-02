@@ -150,8 +150,11 @@ class SubsystemVisitor(PTNodeVisitor):
 
     @classmethod
     def visit_attribute(cls, node, children):
-        """ INDENT attr_name (' : ' type_name)? (SP attr_tags)? EOL """
-        items = {k: v for d in children for k, v in d.items()}
+        """ INDENT derived? attr_name (' : ' type_name)? (SP attr_tags)? EOL """
+        derived = True if children.results.get('derived') else False
+        c = children[1:] if derived else children  # Skip over derived child
+        items = {k: v for d in c for k, v in d.items()}
+        items['derived'] = derived  # Now add an item for the derived boolean
         return items
 
     @classmethod

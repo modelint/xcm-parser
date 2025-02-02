@@ -34,7 +34,8 @@ ee_header = "ee" SP acaps_name EOL*
 // Attributes
 attr_block = attr_header attribute+ // A set of attributes
 attr_header = "attributes" EOL*
-attribute = INDENT attr_name (' : ' type_name)? (SP attr_tags)? EOL*
+attribute = INDENT derived? attr_name (' : ' type_name)? (SP attr_tags)? EOL*
+derived = '/'
 attr_name = icaps_name
 type_name = icaps_name
 attr_tags = '{' attr_tag (',' SP attr_tag )* '}' // {I, I2, R29c} for example
