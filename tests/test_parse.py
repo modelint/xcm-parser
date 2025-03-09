@@ -17,5 +17,6 @@ diagrams = [
 @pytest.mark.parametrize("model", diagrams)
 def test_Starr_pdf(model):
 
-    result = ClassModelParser.parse_file(file_input=Path(f"models/{model}.xcm"), debug=False)
+    input_path = Path(__file__).parent / f"models/{model}.xcm"
+    result = ClassModelParser.parse_file(file_input=input_path, debug=False)
     assert result
