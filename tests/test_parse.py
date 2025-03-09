@@ -10,7 +10,8 @@ diagrams = [
     "sheet",
     "ego",
     "lane_reconfig",
-    "crosswalk"
+    "crosswalk",
+    "type"
 ]
 
 @pytest.mark.parametrize("model", diagrams)

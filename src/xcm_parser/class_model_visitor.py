@@ -311,19 +311,17 @@ class SubsystemVisitor(PTNodeVisitor):
         items = { "assoc_mult": children[0], "assoc_cname": children[1] }
         return items
 
-    # It seems that this visitor isn't required since ref1 and ref2 do all the work
-
-    # @classmethod
-    # def visit_binref(cls, node, children):
-    #     """ INDENT source_attrs SP '->' SP target_attrs reflex? EOL """
-    #     # """ INDENT source_attrs SP '->' SP target_attrs (',' SP itag)? EOL """
-    #     # Not sure why itag is included, disabling for now
-    #     # id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
-    #     # ref = {'source': children[0], 'target': children[1], 'id': id}
-    #     ref = {'source': children[0], 'target': children[1]}
-    #     # if children.results.get('reflex'):
-    #     #     ref['reflexive_phrase'] = children.results['reflex']
-    #     return ref
+    @classmethod
+    def visit_binref(cls, node, children):
+        """ INDENT source_attrs SP '->' SP target_attrs reflex? EOL """
+        # """ INDENT source_attrs SP '->' SP target_attrs (',' SP itag)? EOL """
+        # Not sure why itag is included, disabling for now
+        # id = 1 if len(children) < 3 else children[2]['I']  # referenced model identifier, default is I1
+        # ref = {'source': children[0], 'target': children[1], 'id': id}
+        ref = {'source': children[0], 'target': children[1]}
+        # if children.results.get('reflex'):
+        #     ref['reflexive_phrase'] = children.results['reflex']
+        return ref
 
     @classmethod
     def visit_reflex(cls, node, children):
