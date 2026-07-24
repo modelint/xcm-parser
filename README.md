@@ -1,5 +1,11 @@
 # Executable Class Model Parser
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/modelint/xcm-parser/main/docs/images/xcm_parser.png"
+       alt="Parses an .xcm executable class model file into an abstract syntax tree for downstream Blueprint modules"
+       width="720">
+</p>
+
 Parses an *.xcm file (Executable Class Model) to yield an abstract syntax tree using python named tuples
 
 ### Why you need this
