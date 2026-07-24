@@ -24,14 +24,15 @@ At this point you can invoke the parser via the command line or from your python
 
 You need this import statement at a minimum:
 
-    from xcm-parser.parser import ClassModelParser
+    from xcm_parser.class_model_parser import ClassModelParser
 
 You can then specify a path as shown:
 
     result = ClassModelParser.parse_file(file_input=path_to_file, debug=False)
 
-In either case, `result` will be a list of parsed class model elements. You may find the header of the `visitor.py`
-file helpful in interpreting these results.
+In either case, `result` will be a `Subsystem_a` named tuple holding the parsed class model elements
+(`subsystem`, `domain`, `classes`, `rels`, and `metadata`). You may find the header of the
+`class_model_visitor.py` file helpful in interpreting these results.
 
 #### From the command line
 
@@ -49,7 +50,7 @@ You can also specify a debug option like this:
 
     % xcm elevator.xcm -D
 
-This will create a scrall-diagnostics folder in your current working directory and deposite a coupel of PDFs defining
-the parse of both the class model grammar: `class_model_tree.pdf` and your supplied text: `class_model.pdf`.
+This will create a `diagnostics` folder in your current working directory and deposit a couple of PDFs defining
+the parse of both the class model grammar: `class_model.pdf` and your supplied text: `class_parse_tree.pdf`.
 
-You should also see a file named `xcm-parser.log` in a diagnostics directory within your working directory
+You should also see a file named `xcm_parser.log` in your current working directory
