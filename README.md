@@ -8,6 +8,8 @@
 
 Parses an *.xcm file (Executable Class Model) to yield an abstract syntax tree using python named tuples
 
+> 📖 The xcm modeling language is fully documented in the [project wiki](https://github.com/modelint/xcm-parser/wiki).
+
 ### Why you need this
 
 You need to process an *.xcm file in preparation for populating a database or some other purpose
